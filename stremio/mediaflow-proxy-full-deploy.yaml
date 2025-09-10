@@ -1,0 +1,118 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mediaflow-proxy-env
+  namespace: stremio
+data:
+  API_PASSWORD: ""
+  PROXY_URL: "http://warp-cloudflare-vpn:1080" # http://warp-cloudflare-vpn:1080 / http://gluetun:7777
+  TRANSPORT_ROUTES: '{ "https://torrentio.strem.fun": { "proxy": false } }'
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mediaflow-proxy
+  name: mediaflow-proxy
+  namespace: stremio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mediaflow-proxy
+  template:
+    metadata:
+      labels:
+        app: mediaflow-proxy
+    spec:
+      containers:
+      - name: mediaflow-proxy
+        image: mhdzumair/mediaflow-proxy
+        imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+            name: mediaflow-proxy-env
+        ports:
+        - containerPort: 8888
+          protocol: TCP
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mediaflow-proxy
+  name: mediaflow-proxy
+  namespace: stremio
+spec:
+  ports:
+  - port: 8888
+    protocol: TCP
+    targetPort: 8888
+  selector:
+    app: mediaflow-proxy
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/server-snippet: grpc_read_timeout 120s; grpc_send_timeout
+      120s; client_body_timeout 120s;
+  labels:
+    name: stremio
+  name: mf-ingress
+  namespace: stremio
+spec:
+  ingressClassName: public
+  rules:
+  - host: proxy.inner-circle.ovh
+    http:
+      paths:
+      - backend:
+          service:
+            name: mediaflow-proxy
+            port:
+              number: 8888
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - proxy.inner-circle.ovh
+    secretName: mf-tls
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    name: stremio
+  name: mf-tls
+  namespace: stremio
+  ownerReferences:
+  - apiVersion: networking.k8s.io/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Ingress
+    name: mf-ingress
+spec:
+  dnsNames:
+  - proxy.inner-circle.ovh
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt
+  secretName: mf-tls
+  usages:
+  - digital signature
+  - key encipherment

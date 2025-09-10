@@ -1,0 +1,271 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: stremio
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: aiostreams-data-pvc
+  namespace: stremio
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aiostreams-env
+  namespace: stremio
+data:
+  ADDON_CATALOG_CACHE_TTL: "300"
+  ADDON_ID: "aiostreams.inner-circle.ovh"
+  ADDON_NAME: "AIOStreams Inner-Circle"
+  ADDON_PASSWORD: "" # Asegúrate de establecer una contraseña segura.
+  ADDON_PROXY: "http://warp-cloudflare-vpn:1080"
+  ADDON_PROXY_CONFIG: "*:false"
+  AI_SEARCH_URL: "https://stremio.itcon.au/aisearch"
+  ANIME_CATALOGS_URL: "https://1fe84bc728af-stremio-anime-catalogs.baby-beamup.club"
+  ANIME_KITSU_URL: "https://anime-kitsu.strem.fun/"
+  ARGENTINA_TV_URL: "https://848b3516657c-argentinatv.baby-beamup.club"
+  BASE_URL: "https://aiostreams.inner-circle.ovh"
+  CATALOG_API_RATE_LIMIT_MAX_REQUESTS: "5"
+  CATALOG_API_RATE_LIMIT_WINDOW: "5"
+  CATALOG_CACHE_TTL: "300"
+  COMET_URL: "https://comet.elfhosted.com/"
+  CUSTOM_HTML: ""
+  DATABASE_URI: "sqlite://./data/db.sqlite"
+  DC_UNIVERSE_URL: "https://addon-dc-cq85.onrender.com/"
+  DEBRIDIO_TMDB_URL: "https://tmdb-addon.debridio.com/"
+  DEBRIDIO_TV_URL: "https://tv-addon.debridio.com/"
+  DEBRIDIO_TVDB_URL: "https://tvdb-addon.debridio.com/"
+  DEBRIDIO_URL: "https://addon.debridio.com/"
+  DEBRIDIO_WATCHTOWER_URL: "https://wt-addon.debridio.com/"
+  DEFAULT_ALLDEBRID_API_KEY: ""
+  DEFAULT_DEBRIDLINK_API_KEY: ""
+  DEFAULT_EASYDEBRID_API_KEY: ""
+  DEFAULT_EASYNEWS_PASSWORD: ""
+  DEFAULT_EASYNEWS_USERNAME: ""
+  DEFAULT_JACKETTIO_INDEXERS: '["bitsearch", "eztv", "thepiratebay", "therarbg", "yts"]'
+  DEFAULT_JACKETTIO_STREMTHRU_URL: "https://stremthru.13377001.xyz"
+  DEFAULT_MAX_CACHE_SIZE: "100000"
+  DEFAULT_OFFCLOUD_API_KEY: ""
+  DEFAULT_OFFCLOUD_EMAIL: ""
+  DEFAULT_OFFCLOUD_PASSWORD: ""
+  DEFAULT_PIKPAK_EMAIL: ""
+  DEFAULT_PIKPAK_PASSWORD: ""
+  DEFAULT_PREMIUMIZE_API_KEY: ""
+  DEFAULT_PROXY_ID: "mediaflow"
+  DEFAULT_PUTIO_CLIENT_ID: ""
+  DEFAULT_PUTIO_CLIENT_SECRET: ""
+  DEFAULT_REALDEBRID_API_KEY: "" # Asegúrate de establecer una clave API segura.
+  DEFAULT_SEEDR_ENCODED_TOKEN: ""
+  DEFAULT_TIMEOUT: "150000"
+  DEFAULT_TORBOX_API_KEY: ""
+  DISABLE_RATE_LIMITS: "false"
+  DISABLE_SELF_SCRAPING: "true"
+  DOCTOR_WHO_UNIVERSE_URL: "https://new-who.onrender.com"
+  EASYNEWS_PLUS_PLUS_URL: "https://easynnews-cloudflare-worker.jqrw92fchz.workers.dev/"
+  EASYNEWS_PLUS_URL: "https://b89262c192b0-stremio-easynnews-addon.baby-beamup.club/"
+  EASYNEWS_URL: "https://ea627ddf0ee7-easynnews.baby-beamup.club/"
+  ENCRYPT_MEDIAFLOW_URLS: "true"
+  ENCRYPT_STREMTHRU_URLS: "true"
+  FORCE_PROXY_DISABLE_PROXIED_ADDONS: "false"
+  FORCED_ALLDEBRID_API_KEY: ""
+  FORCED_DEBRIDLINK_API_KEY: ""
+  FORCED_EASYDEBRID_API_KEY: ""
+  FORCED_EASYNEWS_PASSWORD: ""
+  FORCED_EASYNEWS_USERNAME: ""
+  FORCED_OFFCLOUD_API_KEY: ""
+  FORCED_OFFCLOUD_EMAIL: ""
+  FORCED_OFFCLOUD_PASSWORD: ""
+  FORCED_PIKPAK_EMAIL: ""
+  FORCED_PIKPAK_PASSWORD: ""
+  FORCED_PREMIUMIZE_API_KEY: ""
+  FORCED_PUTIO_CLIENT_ID: ""
+  FORCED_PUTIO_CLIENT_SECRET: ""
+  FORCED_REALDEBRID_API_KEY: ""
+  FORCED_SEEDR_ENCODED_TOKEN: ""
+  FORCED_TORBOX_API_KEY: ""
+  FORMAT_API_RATE_LIMIT_MAX_REQUESTS: "30"
+  FORMAT_API_RATE_LIMIT_WINDOW: "5"
+  JACKETTIO_URL: "https://jackettio.elfhosted.com/"
+  LOG_FORMAT: "text"
+  LOG_LEVEL: "http"
+  LOG_SENSITIVE_INFO: "true"
+  LOG_TIMEZONE: "Etc/UTC"
+  MANIFEST_CACHE_TTL: "300"
+  MARVEL_UNIVERSE_URL: "https://addon-marvel.onrender.com/"
+  MAX_ADDONS: "15"
+  MAX_GROUPS: "20"
+  MAX_KEYWORD_FILTERS: "30"
+  MAX_STREAM_EXPRESSION_FILTERS: "30"
+  MAX_TIMEOUT: "500000"
+  MEDIAFUSION_CONFIG_TIMEOUT: "5000 # Timeout (ms) for /encrypt-user-data endpoint."
+  MEDIAFUSION_URL: "https://mediafusion.elfhosted.com/"
+  META_CACHE_TTL: "300"
+  MIN_TIMEOUT: "1000"
+  NUVIOSTREAMS_URL: "https://nuviostreams.hayd.uk/"
+  OPENSUBTITLES_URL: "https://opensubtitles-v3.strem.io/"
+  OPENSUBTITLES_V3_PLUS_URL: "https://opensubtitles.stremio.homes/"
+  ORION_STREMIO_ADDON_URL: "https://5a0d1888fa64-orion.baby-beamup.club/"
+  PEERFLIX_URL: "https://peerflix-addon.onrender.com/"
+  PORT: "3000"
+  PRECACHE_NEXT_EPISODE_MIN_INTERVAL: "86400"
+  PROXY_IP_CACHE_TTL: "900"
+  PRUNE_INTERVAL: "86400"
+  PRUNE_MAX_DAYS: "-1"
+  REGEX_FILTER_ACCESS: "trusted"
+  RPDB_API_KEY_VALIDITY_CACHE_TTL: "604800"
+  RPDB_CATALOGS_URL: "https://1fe84bc728af-rpdb.baby-beamup.club/"
+  SECRET_KEY: "" # Asegúrate de establecer una clave secreta segura.
+  STAR_WARS_UNIVERSE_URL: "https://addon-star-wars-u9e3.onrender.com/"
+  STATIC_RATE_LIMIT_MAX_REQUESTS: "75"
+  STATIC_RATE_LIMIT_WINDOW: "5"
+  STREAM_API_RATE_LIMIT_MAX_REQUESTS: "10"
+  STREAM_API_RATE_LIMIT_WINDOW: "5"
+  STREAM_CACHE_TTL: "-1"
+  STREAMFUSION_URL: "https://stream-fusion.stremiofr.com/"
+  STREAMING_CATALOGS_URL: "https://7a82163c306e-stremio-netflix-catalog-addon.baby-beamup.club/"
+  STREMIO_CATALOG_RATE_LIMIT_MAX_REQUESTS: "30"
+  STREMIO_CATALOG_RATE_LIMIT_WINDOW: "5"
+  STREMIO_MANIFEST_RATE_LIMIT_MAX_REQUESTS: "5"
+  STREMIO_MANIFEST_RATE_LIMIT_WINDOW: "5"
+  STREMIO_META_RATE_LIMIT_MAX_REQUESTS: "15"
+  STREMIO_META_RATE_LIMIT_WINDOW: "5"
+  STREMIO_STREAM_RATE_LIMIT_MAX_REQUESTS: "10"
+  STREMIO_STREAM_RATE_LIMIT_WINDOW: "15"
+  STREMIO_SUBTITLE_RATE_LIMIT_MAX_REQUESTS: "10"
+  STREMIO_SUBTITLE_RATE_LIMIT_WINDOW: "5"
+  STREMTHRU_STORE_URL: "https://stremthru.elfhosted.com/stremio/store/"
+  STREMTHRU_TORZ_URL: "https://stremthru.elfhosted.com/stremio/torz/"
+  SUBDL_URL: "https://subdl.strem.top="
+  SUBSOURCE_URL: "https://subsource.strem.top"
+  SUBTITLE_CACHE_TTL: "300"
+  TMDB_ACCESS_TOKEN: ""
+  TMDB_ADDON_URL: "https://tmdb.elfhosted.com"
+  TMDB_COLLECTIONS_URL: "https://61ab9c85a149-tmdb-collections.baby-beamup.club/"
+  TORBOX_STREMIO_URL: "https://stremio.torbox.app/"
+  TORRENT_CATALOGS_URL: "https://torrent-catalogs.strem.fun/"
+  TORRENTIO_URL: "https://torrentio.strem.fun/"
+  TORRENTS_DB_URL: "https://torrentsdb.com/"
+  USA_TV_URL: "https://848b3516657c-usatv.baby-beamup.club/"
+  USER_API_RATE_LIMIT_MAX_REQUESTS: "5"
+  USER_API_RATE_LIMIT_WINDOW: "5"
+  WEBSTREAMR_URL: "https://webstreamr.hayd.uk/"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aiostreams
+  namespace: stremio
+  labels:
+    app: aiostreams
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aiostreams
+  template:
+    metadata:
+      labels:
+        app: aiostreams
+    spec:
+      containers:
+        - name: aiostreams
+          image: ghcr.io/viren070/aiostreams:latest
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: aiostreams-env
+          volumeMounts:
+            - name: data-storage
+              mountPath: /app/data
+      volumes:
+        - name: data-storage
+          persistentVolumeClaim:
+            claimName: aiostreams-data-pvc
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: aiostreams
+  namespace: stremio
+spec:
+  selector:
+    app: aiostreams
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/server-snippet: "grpc_read_timeout 120s; grpc_send_timeout
+      120s; client_body_timeout 120s;"
+  labels:
+    name: stremio
+  name: aiostreams-ingress
+  namespace: stremio
+spec:
+  ingressClassName: public
+  rules:
+  - host: aiostreams.inner-circle.ovh
+    http:
+      paths:
+      - backend:
+          service:
+            name: aiostreams
+            port:
+              number: 3000
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - aiostreams.inner-circle.ovh
+    secretName: aiostreams-tls
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  generation: 1
+  labels:
+    name: stremio
+  name: aiostreams-tls
+  namespace: stremio
+  ownerReferences:
+  - apiVersion: networking.k8s.io/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Ingress
+    name: aiostreams-ingress
+spec:
+  dnsNames:
+  - aiostreams.inner-circle.ovh
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt
+  secretName: aiostreams-tls
+  usages:
+  - digital signature
+  - key encipherment

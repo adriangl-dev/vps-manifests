@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: stremio
+  name: trakt-auth-env
+data:
+  SLEEP_SECONDS: "600"
+  stremioEmail: correo@correo.com
+  stremioPassword: ""
+  traktEmail: abc@correo.com
+  traktPassword: ""
+
+---
+
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: trakt-auth
+  namespace: stremio
+  labels:
+    app: trakt-auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trakt-auth
+  template:
+    metadata:
+      labels:
+        app: trakt-auth
+    spec:
+      containers:
+      - name: trakt-auth
+        image: adriangl/trakt-auth:latest
+        envFrom:
+        - configMapRef:
+            name: trakt-auth-env
+      restartPolicy: Always

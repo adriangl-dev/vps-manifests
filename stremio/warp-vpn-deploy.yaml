@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: warp-cloudflare-vpn
+  namespace: stremio
+  labels:
+    app: warp-cloudflare-vpn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: warp-cloudflare-vpn
+  template:
+    metadata:
+      labels:
+        app: warp-cloudflare-vpn
+    spec:
+      containers:
+      - name: warp-cloudflare-vpn
+        image: caomingjun/warp
+        imagePullPolicy: Always
+        env:
+        - name: WARP_SLEEP
+          value: "2"
+        ports:
+        - containerPort: 1080
+          protocol: TCP
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+            - NET_ADMIN
+            - SYS_MODULE
+        volumeMounts:
+        - name: lib-modules
+          mountPath: /lib/modules
+          readOnly: true
+        - name: sys
+          mountPath: /sys
+          readOnly: true
+      volumes:
+      - name: lib-modules
+        hostPath:
+          path: /lib/modules
+          type: Directory
+      - name: sys
+        hostPath:
+          path: /sys
+          type: Directory
+      restartPolicy: Always
+      hostNetwork: false
+      dnsPolicy: ClusterFirst
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: warp-cloudflare-vpn
+  namespace: stremio
+spec:
+  selector:
+    app: warp-cloudflare-vpn
+  ports:
+  - name: socks-port
+    port: 1080
+    targetPort: 1080
+    protocol: TCP
+  type: ClusterIP

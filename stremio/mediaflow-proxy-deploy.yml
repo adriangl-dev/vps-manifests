@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mediaflow-proxy-env
+  namespace: stremio
+data:
+  API_PASSWORD: ""
+  PROXY_URL: "http://warp-cloudflare-vpn:1080" # http://warp-cloudflare-vpn:1080 / http://gluetun:7777
+  TRANSPORT_ROUTES: '{ "https://torrentio.strem.fun": { "proxy": false } }'
+---
+# ---------------------------
+# Mediaflow-proxy Deployment
+# ---------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mediaflow-proxy
+  namespace: stremio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mediaflow-proxy
+  template:
+    metadata:
+      labels:
+        app: mediaflow-proxy
+    spec:
+      containers:
+        - name: mediaflow-proxy
+          image: mhdzumair/mediaflow-proxy
+          ports:
+            - containerPort: 8888
+          envFrom:
+            - configMapRef:
+                name: mediaflow-proxy-env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediaflow-proxy
+  namespace: stremio
+spec:
+  selector:
+    app: mediaflow-proxy
+  ports:
+    - port: 8888
+      targetPort: 8888
+      protocol: TCP

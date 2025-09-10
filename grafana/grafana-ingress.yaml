@@ -1,0 +1,39 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"networking.k8s.io/v1","kind":"Ingress","metadata":{"annotations":{"nginx.ingress.kubernetes.io/server-snippet":"grpc_read_timeout 120s; grpc_send_timeout 120s; client_body_timeout 120s;  \n"},"labels":{"name":"observability"},"name":"grafana-ingress","namespace":"observability"},"spec":{"ingressClassName":"public","rules":[{"host":"grafana.inner-circle.ovh","http":{"paths":[{"backend":{"service":{"name":"kube-prom-stack-grafana","port":{"number":80}}},"path":"/","pathType":"Prefix"}]}}]},"status":{"loadBalancer":{"ingress":[{"ip":"127.0.0.1"}]}}}
+    kubernetes.io/ingress.class: public
+    nginx.ingress.kubernetes.io/server-snippet: "grpc_read_timeout 120s; grpc_send_timeout
+      120s; client_body_timeout 120s;  \n"
+  creationTimestamp: "2023-10-11T18:35:23Z"
+  generation: 5
+  labels:
+    name: observability
+  name: grafana-ingress
+  namespace: observability
+  resourceVersion: "1053653"
+  uid: 39aec9fa-f12c-438d-b1c6-ab5ad4e1bfb0
+spec:
+  ingressClassName: public
+  rules:
+  - host: grafana.inner-circle.ovh
+    http:
+      paths:
+      - backend:
+          service:
+            name: kube-prom-stack-grafana
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - grafana.inner-circle.ovh
+    secretName: grafana-tls
+status:
+  loadBalancer:
+    ingress:
+    - ip: 127.0.0.1
