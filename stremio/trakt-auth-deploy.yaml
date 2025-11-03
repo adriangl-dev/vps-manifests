@@ -5,13 +5,12 @@ metadata:
   name: trakt-auth-env
 data:
   SLEEP_SECONDS: "600"
-  traktEmail: abc@correo.com
-  traktPassword: ""
-  stremioTraktUUID: asd123asd
+  traktEmail: mail
+  traktPassword: pwd
+  stremioTraktUUID: uuid
 
 ---
-
-apiVersion: v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: trakt-auth
@@ -30,7 +29,7 @@ spec:
     spec:
       containers:
       - name: trakt-auth
-        image: markflaisz/stremio-trakt-auth:latest
+        image: adriangl/trakt-auth
         envFrom:
         - configMapRef:
             name: trakt-auth-env
